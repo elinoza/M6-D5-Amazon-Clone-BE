@@ -52,7 +52,7 @@ UserSchema.static("addproductToCart", async function (id, product) {
   await UserModel.findOneAndUpdate(
     { _id: id },
     {
-      $addToSet: { cart: product },
+      $push: { cart: product },
     }
   )
 })

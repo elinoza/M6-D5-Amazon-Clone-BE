@@ -10,6 +10,7 @@ const productSchema = new Schema(
     image: String,
     price: Number,
     category: String,
+    quantity:Number,
     reviews: [
       {
         comment: String,
@@ -27,7 +28,7 @@ const productSchema = new Schema(
 
 productSchema.static("decreaseproductQuantity", async function (id, amount) {
   const product = await productModel.findByIdAndUpdate(id, {
-    $inc: { availableQuantity: -amount },
+    $inc: { quantity: -amount },
   })
   return product
 })
