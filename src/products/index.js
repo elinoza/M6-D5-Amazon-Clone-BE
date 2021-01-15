@@ -19,20 +19,14 @@ const productsRouter = express.Router();
 
 ///UPLOADING IMAGE TO CLOUDINARY
 
-productsRouter.post("/:id/add/image", 
+productsRouter.post("/:id/image/upload", 
 cloudMulter.single("image"), async (req, res, next) =>{
+  console.log("req file",req.file.path)
   try{
-      // const newImage = new productSchema(req.body)
-      console.log(req.body)
-      const imageToinsert = { ...req.file.path.toObject()}
-      const updated = await productSchema.findByIdAndUpdate(
-            req.params.id,
-            {
-             
-                images:imageToinsert,
-             
-            },
-            { runValidators: true, new: true }
+    
+     
+      const updated = await productSchema.findByIdAndUpdate(req.params.id, { image:req.file.path },
+        { runValidators: true, new: true }
           )
           res.status(201).send(updated)
         }
