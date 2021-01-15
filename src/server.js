@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const listEndpoints = require("express-list-endpoints")
 const productsRoutes = require("./products");
 const reviewsRoutes = require("./reviews");
 const {
@@ -32,6 +33,7 @@ server.use(unauthorizedHandler);
 server.use(forbiddenHandler);
 server.use(badRequestHandler);
 server.use(catchAllHandler);
+console.log(listEndpoints(server))
 
 mongoose.connect(process.env.MONGO_CONNECT, { useNewUrlParser: true, useUnifiedTopology: true }).then(
   server.listen(port, () => {
