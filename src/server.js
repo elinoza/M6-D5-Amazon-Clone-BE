@@ -1,9 +1,8 @@
 const express = require("express");
-const { join } = require("path");
 const cors = require("cors");
+const mongoose = require("mongoose");
 const productsRoutes = require("./products");
 const reviewsRoutes = require("./reviews");
-const servicesRoutes = require("./products/services.js");
 const {
   notFoundHandler,
   unauthorizedHandler,
@@ -14,8 +13,7 @@ const {
 
 const server = express();
 
-const port = 3001;
-const publicFolderPath = join(__dirname, "../public/images/products");
+const port = process.env.PORT || 3001;
 
 const loggerMiddleware = (req, res, next) => {
   console.log(`Logged ${req.url} ${req.method} -- ${new Date()}`);
@@ -25,11 +23,9 @@ const loggerMiddleware = (req, res, next) => {
 server.use(cors());
 server.use(express.json());
 server.use(loggerMiddleware);
-server.use("/images/products", express.static(publicFolderPath));
 
 server.use("/products", productsRoutes);
 server.use("/reviews", reviewsRoutes);
-server.use("/services", servicesRoutes);
 
 server.use(notFoundHandler);
 server.use(unauthorizedHandler);
@@ -37,6 +33,8 @@ server.use(forbiddenHandler);
 server.use(badRequestHandler);
 server.use(catchAllHandler);
 
-server.listen(port, () => {
-  console.log("Server is running on port: ", port);
-});
+mongoose.connect(process.env.MONGO_CONNECT, { useNewUrlParser: true, useUnifiedTopology: true }).then(
+  server.listen(port, () => {
+    console.log("Server is running on port: ", port);
+  })
+);
