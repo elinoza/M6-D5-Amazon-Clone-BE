@@ -2,8 +2,45 @@ const express = require("express");
 const productSchema = require("./schema");
 const reviewSchema = require("../reviews/schema");
 const mongoose = require("mongoose")
+const multer = require("multer")
+
+const { CloudinaryStorage } = require("multer-storage-cloudinary")
+const cloudinary = require("../cloudinary")
+
+const cloudStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+      folder: "amazon"
+  }
+})
+const cloudMulter =  multer({ storage: cloudStorage})
 
 const productsRouter = express.Router();
+
+///UPLOADING IMAGE TO CLOUDINARY
+
+productsRouter.post("/:id/add/image", 
+cloudMulter.single("image"), async (req, res, next) =>{
+  try{
+      // const newImage = new productSchema(req.body)
+      console.log(req.body)
+      const imageToinsert = { ...req.file.path.toObject()}
+      const updated = await productSchema.findByIdAndUpdate(
+            req.params.id,
+            {
+             
+                images:imageToinsert,
+             
+            },
+            { runValidators: true, new: true }
+          )
+          res.status(201).send(updated)
+        }
+  catch(ex){
+      console.log(ex)
+      next(ex)
+  }
+})
 
 productsRouter.get("/", async (req, res, next) => {
   try {
@@ -219,5 +256,7 @@ productsRouter.put("/:id/reviews/:reviewId", async (req, res, next) => {
     next(error)
   }
 })
+
+
 
 module.exports = productsRouter;
