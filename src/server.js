@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const listEndpoints = require("express-list-endpoints")
 const productsRoutes = require("./products");
 const reviewsRoutes = require("./reviews");
+const usersRoutes = require("./users");
 const {
   notFoundHandler,
   unauthorizedHandler,
@@ -27,6 +28,7 @@ server.use(loggerMiddleware);
 
 server.use("/products", productsRoutes);
 server.use("/reviews", reviewsRoutes);
+server.use("/users", usersRoutes);
 
 server.use(notFoundHandler);
 server.use(unauthorizedHandler);
